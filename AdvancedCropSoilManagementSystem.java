@@ -1,13 +1,11 @@
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Scanner;
+import java.util.Random;
 
-// Mock AI Model for Crop Recommendation
-class CropRecommendationModel {
-    public String recommendCrop(String soilType, double moistureLevel, double pH) {
-        // Simulated AI-based crop recommendation
-        if ("Loamy".equals(soilType) && moistureLevel > 50 && pH > 6.0) {
+class CropAdvisor {
+    String recommendCrop(String soilType, double moisture, double pH) {
+        if (soilType.equals("Loamy") && moisture > 50 && pH > 6.0) {
             return "Wheat";
-        } else if ("Clay".equals(soilType) && moistureLevel < 50 && pH < 6.0) {
+        } else if (soilType.equals("Clay") && moisture < 50 && pH < 6.0) {
             return "Rice";
         } else {
             return "Maize";
@@ -15,32 +13,28 @@ class CropRecommendationModel {
     }
 }
 
-// Simulated IoT Device for Soil Health Monitoring
-class IoTDevice {
-    public double getSoilMoisture() {
-        // Simulated moisture level reading
-        return ThreadLocalRandom.current().nextDouble(30.0, 80.0);
+class SoilSensor {
+    Random random = new Random();
+
+    double getMoisture() {
+        return 30.0 + (50.0 * random.nextDouble());
     }
 
-    public double getSoilPH() {
-        // Simulated pH level reading
-        return ThreadLocalRandom.current().nextDouble(4.5, 8.0);
+    double getPH() {
+        return 4.5 + (3.5 * random.nextDouble());
     }
 
-    public String getSoilType() {
-        // Simulated soil type detection
+    String getSoilType() {
         String[] soilTypes = {"Loamy", "Clay", "Sandy"};
-        return soilTypes[ThreadLocalRandom.current().nextInt(soilTypes.length)];
+        return soilTypes[random.nextInt(soilTypes.length)];
     }
 }
 
-// Simulated Disease Detection using Image Recognition
-class DiseaseDetectionModel {
-    public String detectDisease(String image) {
-        // Simulated disease detection
-        if (image.contains("spot")) {
+class DiseaseDetector {
+    String detectDisease(String description) {
+        if (description.contains("spot")) {
             return "Leaf Spot";
-        } else if (image.contains("blight")) {
+        } else if (description.contains("blight")) {
             return "Blight";
         } else {
             return "Unknown Disease";
@@ -48,94 +42,86 @@ class DiseaseDetectionModel {
     }
 }
 
-// Main Application
-public class AdvancedCropSoilManagementSystem {
-    static CropRecommendationModel cropModel = new CropRecommendationModel();
-    static IoTDevice ioTDevice = new IoTDevice();
-    static DiseaseDetectionModel diseaseModel = new DiseaseDetectionModel();
+public class CropSoilManager {
+    static CropAdvisor advisor = new CropAdvisor();
+    static SoilSensor sensor = new SoilSensor();
+    static DiseaseDetector detector = new DiseaseDetector();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        
         while (true) {
-            System.out.println("\n--- Advanced Crop and Soil Management System ---");
-            System.out.println("1. Get AI-Powered Crop Recommendation");
-            System.out.println("2. Monitor Soil Health (IoT)");
-            System.out.println("3. Detect Plant Disease from Image");
+            System.out.println("\nWelcome to the Crop and Soil Management System");
+            System.out.println("1. Get Crop Recommendation");
+            System.out.println("2. Check Soil Health");
+            System.out.println("3. Identify Plant Disease");
             System.out.println("4. Exit");
-            System.out.print("Choose an option: ");
+            System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    getCropRecommendation();
-                    break;
-                case 2:
-                    monitorSoilHealth();
-                    break;
-                case 3:
-                    detectPlantDisease(scanner);
-                    break;
-                case 4:
-                    System.out.println("Exiting...");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+            if (choice == 1) {
+                getCropRecommendation();
+            } else if (choice == 2) {
+                checkSoilHealth();
+            } else if (choice == 3) {
+                identifyDisease(scanner);
+            } else if (choice == 4) {
+                System.out.println("Thanks for using the system. Goodbye!");
+                break;
+            } else {
+                System.out.println("Invalid choice. Please try again.");
             }
         }
     }
 
-    public static void getCropRecommendation() {
-        String soilType = ioTDevice.getSoilType();
-        double moisture = ioTDevice.getSoilMoisture();
-        double pH = ioTDevice.getSoilPH();
+    static void getCropRecommendation() {
+        String soilType = sensor.getSoilType();
+        double moisture = sensor.getMoisture();
+        double pH = sensor.getPH();
 
-        String recommendedCrop = cropModel.recommendCrop(soilType, moisture, pH);
+        String recommendedCrop = advisor.recommendCrop(soilType, moisture, pH);
 
-        System.out.println("\n--- AI-Powered Crop Recommendation ---");
+        System.out.println("\nCrop Recommendation:");
         System.out.println("Soil Type: " + soilType);
-        System.out.println("Soil Moisture: " + String.format("%.2f", moisture) + "%");
-        System.out.println("Soil pH Level: " + String.format("%.2f", pH));
+        System.out.println("Moisture Level: " + String.format("%.2f", moisture) + "%");
+        System.out.println("pH Level: " + String.format("%.2f", pH));
         System.out.println("Recommended Crop: " + recommendedCrop);
     }
 
-    public static void monitorSoilHealth() {
-        String soilType = ioTDevice.getSoilType();
-        double moisture = ioTDevice.getSoilMoisture();
-        double pH = ioTDevice.getSoilPH();
+    static void checkSoilHealth() {
+        String soilType = sensor.getSoilType();
+        double moisture = sensor.getMoisture();
+        double pH = sensor.getPH();
 
-        System.out.println("\n--- Real-Time Soil Health Monitoring ---");
+        System.out.println("\nSoil Health Report:");
         System.out.println("Soil Type: " + soilType);
-        System.out.println("Soil Moisture: " + String.format("%.2f", moisture) + "%");
-        System.out.println("Soil pH Level: " + String.format("%.2f", pH));
-        
-        // Additional action based on soil health
+        System.out.println("Moisture Level: " + String.format("%.2f", moisture) + "%");
+        System.out.println("pH Level: " + String.format("%.2f", pH));
+
         if (moisture < 40) {
-            System.out.println("Alert: Low moisture detected! Consider irrigating the soil.");
+            System.out.println("Warning: Moisture is low. You might need to water the plants.");
         }
         if (pH < 5.5) {
-            System.out.println("Alert: Low pH detected! Consider adding lime to the soil.");
+            System.out.println("Warning: pH is too low. Consider adding lime.");
         }
     }
 
-    public static void detectPlantDisease(Scanner scanner) {
-        System.out.print("Enter image description (e.g., 'blight', 'spot'): ");
-        String imageDescription = scanner.nextLine();
+    static void identifyDisease(Scanner scanner) {
+        System.out.print("Describe the plant issue (e.g., 'blight', 'spot'): ");
+        String description = scanner.nextLine();
 
-        String detectedDisease = diseaseModel.detectDisease(imageDescription);
+        String disease = detector.detectDisease(description);
 
-        System.out.println("\n--- Plant Disease Detection ---");
-        System.out.println("Detected Disease: " + detectedDisease);
-        
-        // Simulated advice
-        if ("Leaf Spot".equals(detectedDisease)) {
-            System.out.println("Suggested Treatment: Use a fungicide spray.");
-        } else if ("Blight".equals(detectedDisease)) {
-            System.out.println("Suggested Treatment: Remove and destroy infected plants.");
+        System.out.println("\nDisease Identification Result:");
+        System.out.println("Disease: " + disease);
+
+        if (disease.equals("Leaf Spot")) {
+            System.out.println("Action: Apply a fungicide to control the leaf spot.");
+        } else if (disease.equals("Blight")) {
+            System.out.println("Action: Remove and destroy affected plants to prevent spread.");
         } else {
-            System.out.println("Suggested Treatment: Consult an agricultural expert.");
+            System.out.println("Action: Consult an agricultural expert for further advice.");
         }
     }
 }
